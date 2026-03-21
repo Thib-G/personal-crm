@@ -46,7 +46,7 @@ class Contact(models.Model):
 
 
 class ContactPhone(models.Model):
-    id = models.UUIDField(primary_key=True, editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     contact = models.ForeignKey(Contact, on_delete=models.CASCADE, related_name="phones")
     number = models.CharField(max_length=50)
     updated_at = models.DateTimeField(auto_now=True)
@@ -56,7 +56,7 @@ class ContactPhone(models.Model):
 
 
 class ContactEmail(models.Model):
-    id = models.UUIDField(primary_key=True, editable=False)
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     contact = models.ForeignKey(Contact, on_delete=models.CASCADE, related_name="emails")
     address = models.CharField(max_length=254)
     updated_at = models.DateTimeField(auto_now=True)
