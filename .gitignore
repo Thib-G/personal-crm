@@ -1,0 +1,61 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+env/
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+media/
+staticfiles/
+
+# Data volume
+data/
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Node.js / Frontend
+node_modules/
+frontend/dist/
+frontend/build/
+frontend/.vite/
+.npm/
+
+# Testing & Coverage
+.coverage
+coverage/
+.pytest_cache/
+htmlcov/
+.vitest/
+*.lcov
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Docker
+*.tar
+
+# Misc
+*.tmp
+Thumbs.db

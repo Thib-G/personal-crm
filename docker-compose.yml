@@ -1,0 +1,15 @@
+services:
+  app:
+    build: .
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - ./data:/app/data
+    command: sh -c "python manage.py migrate --noinput && gunicorn crm.wsgi:application --bind 0.0.0.0:8000 --workers 2 --threads 2 --worker-class sync --timeout 30 --access-logfile -"
+    environment:
+      - DJANGO_SETTINGS_MODULE=crm.settings.production
+      - SECRET_KEY=${SECRET_KEY:-django-insecure-local-dev-key-change-in-production}
+      - ALLOWED_HOSTS=${ALLOWED_HOSTS:-localhost}
+      - DATABASE_PATH=/app/data/db.sqlite3
+      - CSRF_TRUSTED_ORIGINS=${CSRF_TRUSTED_ORIGINS:-http://localhost:8000}

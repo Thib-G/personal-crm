@@ -1,0 +1,30 @@
+.git/
+.gitignore
+.DS_Store
+*.log
+*.md
+specs/
+.specify/
+CLAUDE.md
+
+# Python dev artifacts
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+htmlcov/
+.coverage
+*.egg-info/
+
+# Frontend dev artifacts
+frontend/node_modules/
+frontend/.vite/
+
+# Data (mounted as volume)
+data/
+
+# Secrets
+.env
+.env.*
+!backend/.env.example
