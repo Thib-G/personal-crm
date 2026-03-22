@@ -1,6 +1,6 @@
 <template>
   <span
-    :class="['sync-icon', `sync-${syncStatus}`, { 'sync-spinning': syncStatus === 'syncing' }]"
+    :class="['sync-icon', `sync-${status}`, { 'sync-spinning': status === 'syncing' }]"
     :title="tooltip"
     aria-label="Sync status"
   >{{ icon }}</span>
@@ -9,6 +9,8 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { syncStatus } from '@/services/sync'
+
+const status = computed(() => syncStatus.value)
 
 const icon = computed(() => {
   switch (syncStatus.value) {

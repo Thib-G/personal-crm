@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
+import { liveQuery } from 'dexie'
 import { db } from '@/services/db'
 import type { Contact } from '@/services/db'
 import { syncService } from '@/services/sync'
@@ -29,11 +30,16 @@ type CreateContactPayload = {
 export const useContactStore = defineStore('contacts', () => {
   const contacts = ref<Contact[]>([])
 
-  async function loadContacts(): Promise<Contact[]> {
-    const all = await db.contacts.orderBy('name').toArray()
-    const active = all.filter((c) => c.is_deleted !== true)
-    contacts.value = active
-    return active
+  liveQuery(() =>
+    db.contacts.orderBy('name').toArray().then((all) => all.filter((c) => !c.is_deleted)),
+  ).subscribe({
+    next: (result) => {
+      contacts.value = result
+    },
+  })
+
+  function loadContacts(): Promise<Contact[]> {
+    return Promise.resolve(contacts.value)
   }
 
   async function createContact(payload: CreateContactPayload): Promise<void> {
@@ -75,8 +81,6 @@ export const useContactStore = defineStore('contacts', () => {
       payload,
       synced: 0,
     })
-
-    await loadContacts()
   }
 
   async function updateContact(id: string, patch: ContactPatchPayload): Promise<void> {
@@ -137,8 +141,6 @@ export const useContactStore = defineStore('contacts', () => {
       payload: { id, ...patch, updated_at: now },
       synced: 0,
     })
-
-    await loadContacts()
   }
 
   async function deleteContact(id: string): Promise<void> {
@@ -155,8 +157,6 @@ export const useContactStore = defineStore('contacts', () => {
       payload: { id, deleted_at: now },
       synced: 0,
     })
-
-    await loadContacts()
   }
 
   return {

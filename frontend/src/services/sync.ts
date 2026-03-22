@@ -39,6 +39,10 @@ class SyncService {
     await db.outbox.add({ ...entry, created_at: new Date().toISOString() } as OutboxEntry)
   }
 
+  syncNow(): Promise<void> {
+    return this.syncCycle()
+  }
+
   async syncCycle(): Promise<void> {
     if (syncStatus.value === 'offline') return
     syncStatus.value = 'syncing'

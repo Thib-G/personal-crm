@@ -17,7 +17,7 @@ vi.mock('@/services/db', () => ({
 }))
 
 vi.mock('@/services/sync', () => ({
-  syncService: { addToOutbox: vi.fn(), startSync: vi.fn() },
+  syncService: { addToOutbox: vi.fn(), startSync: vi.fn(), syncNow: vi.fn() },
 }))
 
 vi.mock('@/composables/useGeolocation', () => ({

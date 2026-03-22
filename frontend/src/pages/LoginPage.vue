@@ -38,6 +38,7 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/auth'
+import { syncService } from '../services/sync'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -53,6 +54,7 @@ async function handleSubmit(): Promise<void> {
 
   try {
     await authStore.login(username.value, password.value)
+    syncService.syncNow()
     await router.push('/contacts')
   } catch (err) {
     if (err instanceof Error && err.message === 'Invalid username or password') {

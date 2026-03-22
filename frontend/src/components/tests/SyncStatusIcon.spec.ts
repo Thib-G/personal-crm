@@ -11,7 +11,7 @@ const mockSyncStatus = vi.hoisted(() => ({
 
 vi.mock('@/services/sync', () => ({
   syncStatus: mockSyncStatus,
-  syncService: { addToOutbox: vi.fn(), startSync: vi.fn() },
+  syncService: { addToOutbox: vi.fn(), startSync: vi.fn(), syncNow: vi.fn() },
 }))
 
 describe('SyncStatusIcon — icon rendering (US1)', () => {

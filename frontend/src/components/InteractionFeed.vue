@@ -1,11 +1,11 @@
 <template>
   <div>
-    <div v-if="interactionStore.entries.length === 0" class="empty-state">
+    <div v-if="entries.length === 0" class="empty-state">
       No interactions yet
     </div>
 
     <div
-      v-for="entry in interactionStore.entries"
+      v-for="entry in entries"
       :key="entry.id"
       class="entry"
     >
@@ -19,17 +19,31 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
-import { useInteractionStore } from '@/stores/interactions'
+import { ref, onUnmounted } from 'vue'
+import { liveQuery } from 'dexie'
+import { db } from '@/services/db'
+import type { InteractionEntry } from '@/services/db'
 
 const props = defineProps<{
   contactId: string
 }>()
 
-const interactionStore = useInteractionStore()
+const entries = ref<InteractionEntry[]>([])
 
-onMounted(async () => {
-  await interactionStore.loadForContact(props.contactId)
+const sub = liveQuery(() =>
+  db.interaction_entries
+    .where('contact_id')
+    .equals(props.contactId)
+    .sortBy('created_at')
+    .then((rows) => rows.reverse()),
+).subscribe({
+  next: (rows) => {
+    entries.value = rows
+  },
+})
+
+onUnmounted(() => {
+  sub.unsubscribe()
 })
 
 function formatDate(isoString: string): string {

@@ -11,6 +11,8 @@ Auto-generated from all feature plans. Last updated: 2026-03-22
 - N/A — frontend-only, no data changes (004-ui-layout)
 - Markdown (documentation-only deliverable) + N/A — no new packages; existing Docker Compose files and Dockerfile are the source of truth (005-add-readme-docs)
 - N/A — no data changes (005-add-readme-docs)
+- TypeScript 5 / Vue 3 + `dexie` (already installed — `liveQuery` is a named export, no new package needed), Pinia, Vue Router 4 (006-fix-sync-ui-refresh)
+- IndexedDB via Dexie.js (no schema changes) (006-fix-sync-ui-refresh)
 
 - Python 3.13 (backend) · Node 22 / TypeScript 5 (frontend build) + Django 5.2 LTS, Django-Ninja ≥1.3, gunicorn, WhiteNoise ≥6, Dexie.js, Pinia, Vue Router 4, Leaflet.js, @vue-leaflet/vue-leaflet, Leaflet.markercluster (001-personal-crm)
 
@@ -30,9 +32,9 @@ cd src [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLO
 Python 3.13 (backend) · Node 22 / TypeScript 5 (frontend build): Follow standard conventions
 
 ## Recent Changes
+- 006-fix-sync-ui-refresh: Added TypeScript 5 / Vue 3 + `dexie` (already installed — `liveQuery` is a named export, no new package needed), Pinia, Vue Router 4
 - 005-add-readme-docs: Added Markdown (documentation-only deliverable) + N/A — no new packages; existing Docker Compose files and Dockerfile are the source of truth
 - 004-ui-layout: Added TypeScript 5 / Vue 3 + Vue 3 (built-in scoped styles) — no new packages
-- 003-admin-contacts: Added Python 3.13 + Django 5.2 LTS (built-in `django.contrib.admin` — no new packages)
 
 
 <!-- MANUAL ADDITIONS START -->

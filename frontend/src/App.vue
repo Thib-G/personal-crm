@@ -5,6 +5,7 @@
       <router-link to="/map">Map</router-link>
       <router-link to="/settings">Settings</router-link>
       <SyncStatusIcon class="nav-sync" />
+      <SyncNowButton />
       <button class="nav-logout" @click="handleLogout">Logout</button>
     </nav>
     <router-view />
@@ -16,6 +17,7 @@ import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from './stores/auth'
 import SyncStatusIcon from './components/SyncStatusIcon.vue'
+import SyncNowButton from './components/SyncNowButton.vue'
 
 const route = useRoute()
 const router = useRouter()

@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
+import { liveQuery } from 'dexie'
 import { db } from '@/services/db'
 import type { InteractionEntry } from '@/services/db'
 import { syncService } from '@/services/sync'
@@ -9,12 +10,31 @@ export const useInteractionStore = defineStore('interactions', () => {
   const entries = ref<InteractionEntry[]>([])
   const currentContactId = ref<string | null>(null)
 
-  async function loadForContact(contactId: string): Promise<void> {
-    const rows = await db.interaction_entries
-      .where('contact_id')
-      .equals(contactId)
-      .sortBy('created_at')
-    entries.value = rows.reverse()
+  let subscription: { unsubscribe: () => void } | null = null
+
+  watch(currentContactId, (contactId) => {
+    if (subscription) {
+      subscription.unsubscribe()
+      subscription = null
+    }
+    if (contactId) {
+      subscription = liveQuery(() =>
+        db.interaction_entries
+          .where('contact_id')
+          .equals(contactId)
+          .sortBy('created_at')
+          .then((rows) => rows.reverse()),
+      ).subscribe({
+        next: (rows) => {
+          entries.value = rows
+        },
+      })
+    } else {
+      entries.value = []
+    }
+  })
+
+  function loadForContact(contactId: string): void {
     currentContactId.value = contactId
   }
 
@@ -41,8 +61,6 @@ export const useInteractionStore = defineStore('interactions', () => {
       payload: { ...entry },
       synced: 0,
     })
-
-    await loadForContact(contactId)
   }
 
   return {

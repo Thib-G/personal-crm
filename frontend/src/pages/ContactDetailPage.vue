@@ -83,8 +83,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { liveQuery } from 'dexie'
 import { db } from '@/services/db'
 import type { Contact, ContactPhone, ContactEmail, ContactHistoryEntry } from '@/services/db'
 import { useContactStore } from '@/stores/contacts'
@@ -107,27 +108,31 @@ const history = ref<ContactHistoryEntry[]>([])
 const showDeleteConfirm = ref(false)
 const isDeleting = ref(false)
 
-onMounted(async () => {
-  await loadContact()
+const subContact = liveQuery(() => db.contacts.get(id)).subscribe({
+  next: (c) => {
+    contact.value = c ?? null
+    loading.value = false
+  },
 })
 
-async function loadContact() {
-  loading.value = true
-  try {
-    const [c, p, e, h] = await Promise.all([
-      db.contacts.get(id),
-      db.contact_phones.where('contact_id').equals(id).toArray(),
-      db.contact_emails.where('contact_id').equals(id).toArray(),
-      db.contact_history.where('contact_id').equals(id).toArray(),
-    ])
-    contact.value = c ?? null
-    phones.value = p
-    emails.value = e
-    history.value = h
-  } finally {
-    loading.value = false
-  }
-}
+const subPhones = liveQuery(() =>
+  db.contact_phones.where('contact_id').equals(id).toArray(),
+).subscribe({ next: (p) => { phones.value = p } })
+
+const subEmails = liveQuery(() =>
+  db.contact_emails.where('contact_id').equals(id).toArray(),
+).subscribe({ next: (e) => { emails.value = e } })
+
+const subHistory = liveQuery(() =>
+  db.contact_history.where('contact_id').equals(id).toArray(),
+).subscribe({ next: (h) => { history.value = h } })
+
+onUnmounted(() => {
+  subContact.unsubscribe()
+  subPhones.unsubscribe()
+  subEmails.unsubscribe()
+  subHistory.unsubscribe()
+})
 
 function formatDate(isoString: string): string {
   if (!isoString) return ''
