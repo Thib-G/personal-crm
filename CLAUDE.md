@@ -1,6 +1,6 @@
 # personal-crm Development Guidelines
 
-Auto-generated from all feature plans. Last updated: 2026-03-21
+Auto-generated from all feature plans. Last updated: 2026-03-22
 
 ## Active Technologies
 - TypeScript 5 / Vue 3 (frontend only) + Vue 3 reactive system (ref, computed), Pinia (already present — not used for this feature per research Decision 1), @vue/test-utils + Vitest (tests) (002-sync-status-indicator)
@@ -9,6 +9,8 @@ Auto-generated from all feature plans. Last updated: 2026-03-21
 - SQLite via Django ORM (no schema changes — no migrations needed) (003-admin-contacts)
 - TypeScript 5 / Vue 3 + Vue 3 (built-in scoped styles) — no new packages (004-ui-layout)
 - N/A — frontend-only, no data changes (004-ui-layout)
+- Markdown (documentation-only deliverable) + N/A — no new packages; existing Docker Compose files and Dockerfile are the source of truth (005-add-readme-docs)
+- N/A — no data changes (005-add-readme-docs)
 
 - Python 3.13 (backend) · Node 22 / TypeScript 5 (frontend build) + Django 5.2 LTS, Django-Ninja ≥1.3, gunicorn, WhiteNoise ≥6, Dexie.js, Pinia, Vue Router 4, Leaflet.js, @vue-leaflet/vue-leaflet, Leaflet.markercluster (001-personal-crm)
 
@@ -28,9 +30,9 @@ cd src [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLO
 Python 3.13 (backend) · Node 22 / TypeScript 5 (frontend build): Follow standard conventions
 
 ## Recent Changes
+- 005-add-readme-docs: Added Markdown (documentation-only deliverable) + N/A — no new packages; existing Docker Compose files and Dockerfile are the source of truth
 - 004-ui-layout: Added TypeScript 5 / Vue 3 + Vue 3 (built-in scoped styles) — no new packages
 - 003-admin-contacts: Added Python 3.13 + Django 5.2 LTS (built-in `django.contrib.admin` — no new packages)
-- 002-sync-status-indicator: Added TypeScript 5 / Vue 3 (frontend only) + Vue 3 reactive system (ref, computed), Pinia (already present — not used for this feature per research Decision 1), @vue/test-utils + Vitest (tests)
 
 
 <!-- MANUAL ADDITIONS START -->
