@@ -1,6 +1,6 @@
 <template>
   <span
-    :class="['sync-icon', `sync-${syncStatus.value}`, { 'sync-spinning': syncStatus.value === 'syncing' }]"
+    :class="['sync-icon', `sync-${syncStatus}`, { 'sync-spinning': syncStatus === 'syncing' }]"
     :title="tooltip"
     aria-label="Sync status"
   >{{ icon }}</span>
