@@ -141,8 +141,8 @@ async function handleSubmit() {
       name: name.value.trim(),
       context_tag: context_tag.value.trim() || undefined,
       organisation: organisation.value.trim() || undefined,
-      phones: phones.value.filter((p) => p.number.trim()),
-      emails: emails.value.filter((e) => e.address.trim()),
+      phones: phones.value.filter((p) => p.number.trim()).map((p) => ({ id: p.id, number: p.number })),
+      emails: emails.value.filter((e) => e.address.trim()).map((e) => ({ id: e.id, address: e.address })),
       edit_lat: gps?.lat ?? null,
       edit_lng: gps?.lng ?? null,
     }
