@@ -17,6 +17,12 @@ A self-hosted personal contact relationship manager — runs entirely in Docker,
 - **Docker** ≥ 20.10
 - **Docker Compose** v2 (`docker compose`, not `docker-compose`)
 
+> **Linux server note**: Docker Desktop (macOS/Windows) bundles Docker Compose automatically. On a Linux server you must install it separately:
+> ```bash
+> sudo apt-get update && sudo apt-get install docker-compose-plugin
+> ```
+> Verify with `docker compose version` before proceeding.
+
 > **Port requirements**: The local development stack uses ports **8000** (backend) and **5173** (frontend). Make sure both are free before starting. If either port is in use, stop the conflicting process or edit `docker-compose.dev.yml` to use different host ports.
 
 ---
