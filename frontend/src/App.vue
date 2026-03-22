@@ -8,12 +8,13 @@
       <SyncNowButton />
       <button class="nav-logout" @click="handleLogout">Logout</button>
     </nav>
+    <p v-if="logoutError" class="logout-error">{{ logoutError }}</p>
     <router-view />
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from './stores/auth'
 import SyncStatusIcon from './components/SyncStatusIcon.vue'
@@ -25,9 +26,15 @@ const authStore = useAuthStore()
 
 const isLoginRoute = computed(() => route.path === '/login')
 
+const logoutError = ref<string | null>(null)
+
 async function handleLogout(): Promise<void> {
-  await authStore.logout()
-  await router.push('/login')
+  try {
+    await authStore.logout()
+    window.location.href = '/login'
+  } catch {
+    logoutError.value = 'Logout failed. Please try again.'
+  }
 }
 </script>
 

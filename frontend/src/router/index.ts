@@ -47,21 +47,19 @@ const router = createRouter({
 })
 
 router.beforeEach(async (to: RouteLocationNormalized) => {
-  if (to.name === 'login') {
-    return true
-  }
-
   const authStore = useAuthStore()
 
   if (!authStore.user) {
     await authStore.checkSession()
   }
 
-  if (!authStore.user) {
-    return { name: 'login' }
+  const isAuthenticated = !!authStore.user
+
+  if (to.name === 'login') {
+    return isAuthenticated ? { name: 'contacts' } : true
   }
 
-  return true
+  return isAuthenticated ? true : { name: 'login' }
 })
 
 export default router

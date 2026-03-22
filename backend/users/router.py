@@ -17,7 +17,7 @@ def login_view(request, payload: LoginIn):
     return UserOut(id=user.id, username=user.username)
 
 
-@router.post("/logout/")
+@router.post("/logout/", auth=None)
 def logout_view(request):
     logout(request)
     return {"detail": "Logged out"}
