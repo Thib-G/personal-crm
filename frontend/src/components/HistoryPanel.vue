@@ -1,29 +1,31 @@
 <template>
   <div>
-    <div v-if="history.length === 0" style="color: #888; font-style: italic;">
+    <div v-if="history.length === 0" class="empty-state">
       No edit history yet
     </div>
 
-    <table v-else style="width: 100%; border-collapse: collapse; font-size: 0.9em;">
-      <thead>
-        <tr>
-          <th style="text-align: left; padding: 6px 8px; border-bottom: 2px solid #ddd;">Field</th>
-          <th style="text-align: left; padding: 6px 8px; border-bottom: 2px solid #ddd;">From</th>
-          <th style="text-align: left; padding: 6px 8px; border-bottom: 2px solid #ddd;">To</th>
-          <th style="text-align: left; padding: 6px 8px; border-bottom: 2px solid #ddd;">Date</th>
-          <th style="text-align: left; padding: 6px 8px; border-bottom: 2px solid #ddd;">Location</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="h in history" :key="h.id" style="border-bottom: 1px solid #eee;">
-          <td style="padding: 6px 8px;">{{ h.field_name }}</td>
-          <td style="padding: 6px 8px; color: #888;">{{ h.old_value ?? '—' }}</td>
-          <td style="padding: 6px 8px;">{{ h.new_value ?? '—' }}</td>
-          <td style="padding: 6px 8px; white-space: nowrap;">{{ formatDate(h.changed_at) }}</td>
-          <td style="padding: 6px 8px; white-space: nowrap;">{{ formatLocation(h) }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div v-else class="table-wrapper">
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>Field</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Date</th>
+            <th>Location</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="h in history" :key="h.id">
+            <td>{{ h.field_name }}</td>
+            <td class="muted">{{ h.old_value ?? '—' }}</td>
+            <td>{{ h.new_value ?? '—' }}</td>
+            <td class="nowrap">{{ formatDate(h.changed_at) }}</td>
+            <td class="nowrap">{{ formatLocation(h) }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
@@ -45,3 +47,43 @@ function formatLocation(h: ContactHistoryEntry): string {
   return '—'
 }
 </script>
+
+<style scoped>
+.empty-state {
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--font-size-sm);
+  min-width: 400px;
+}
+
+.history-table th {
+  text-align: left;
+  padding: var(--space-1) var(--space-2);
+  border-bottom: 2px solid var(--color-border);
+  color: var(--color-text-muted);
+}
+
+.history-table td {
+  padding: var(--space-1) var(--space-2);
+  border-bottom: 1px solid var(--color-border);
+  color: var(--color-text);
+}
+
+.muted {
+  color: var(--color-text-muted);
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+</style>
