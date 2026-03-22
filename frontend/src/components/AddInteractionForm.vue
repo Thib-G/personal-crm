@@ -1,23 +1,23 @@
 <template>
   <div>
     <form @submit.prevent="handleSubmit">
-      <div style="margin-bottom: 8px;">
+      <div class="field">
         <textarea
           v-model="content"
           rows="3"
           placeholder="What happened?"
-          style="width: 100%; max-width: 500px; resize: vertical;"
+          class="textarea"
         ></textarea>
-        <div v-if="validationError" style="color: red; font-size: 0.9em; margin-top: 4px;">
+        <div v-if="validationError" class="error">
           {{ validationError }}
         </div>
       </div>
 
-      <div v-if="errorMessage" style="color: red; margin-bottom: 8px;">
+      <div v-if="errorMessage" class="error error-block">
         {{ errorMessage }}
       </div>
 
-      <button type="submit" :disabled="submitting">
+      <button type="submit" :disabled="submitting" class="btn-primary">
         {{ submitting ? 'Adding…' : 'Add Interaction' }}
       </button>
     </form>
@@ -59,3 +59,54 @@ async function handleSubmit() {
   }
 }
 </script>
+
+<style scoped>
+.field {
+  margin-bottom: var(--space-2);
+}
+
+.textarea {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-base);
+  font-family: inherit;
+  resize: vertical;
+  box-sizing: border-box;
+}
+
+.textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.error {
+  color: var(--color-danger);
+  font-size: var(--font-size-sm);
+  margin-top: var(--space-1);
+}
+
+.error-block {
+  margin-bottom: var(--space-2);
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--font-size-base);
+  cursor: pointer;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--color-primary-dark);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+</style>

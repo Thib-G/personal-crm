@@ -1,34 +1,36 @@
 <template>
-  <div style="max-width: 360px; margin: 80px auto; padding: 0 16px;">
-    <h1>Sign in</h1>
-    <form @submit.prevent="handleSubmit">
-      <div style="margin-bottom: 12px;">
-        <label for="username">Username</label><br />
-        <input
-          id="username"
-          v-model="username"
-          type="text"
-          autocomplete="username"
-          required
-          style="width: 100%; padding: 8px; box-sizing: border-box;"
-        />
-      </div>
-      <div style="margin-bottom: 12px;">
-        <label for="password">Password</label><br />
-        <input
-          id="password"
-          v-model="password"
-          type="password"
-          autocomplete="current-password"
-          required
-          style="width: 100%; padding: 8px; box-sizing: border-box;"
-        />
-      </div>
-      <p v-if="errorMessage" style="color: red;">{{ errorMessage }}</p>
-      <button type="submit" :disabled="loading" style="padding: 8px 16px;">
-        Sign in
-      </button>
-    </form>
+  <div class="login-page">
+    <div class="login-card">
+      <h1>Sign in</h1>
+      <form @submit.prevent="handleSubmit">
+        <div class="field">
+          <label for="username">Username</label>
+          <input
+            id="username"
+            v-model="username"
+            type="text"
+            autocomplete="username"
+            required
+            class="input"
+          />
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input
+            id="password"
+            v-model="password"
+            type="password"
+            autocomplete="current-password"
+            required
+            class="input"
+          />
+        </div>
+        <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+        <button type="submit" :disabled="loading" class="btn-submit">
+          Sign in
+        </button>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -63,3 +65,68 @@ async function handleSubmit(): Promise<void> {
   }
 }
 </script>
+
+<style scoped>
+.login-page {
+  padding: 0 var(--space-4);
+}
+
+.login-card {
+  max-width: 360px;
+  margin: var(--space-8) auto;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-6);
+}
+
+.login-card h1 {
+  margin-top: 0;
+}
+
+.field {
+  margin-bottom: var(--space-3);
+}
+
+.field label {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+}
+
+.input {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-base);
+  box-sizing: border-box;
+}
+
+.error {
+  color: var(--color-danger);
+  font-size: var(--font-size-sm);
+  margin: var(--space-2) 0;
+}
+
+.btn-submit {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-base);
+  cursor: pointer;
+}
+
+.btn-submit:hover:not(:disabled) {
+  background: var(--color-primary-dark);
+}
+
+.btn-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+</style>

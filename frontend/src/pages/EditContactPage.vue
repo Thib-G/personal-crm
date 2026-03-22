@@ -1,65 +1,63 @@
 <template>
-  <div>
+  <div class="page">
     <h1>Edit Contact</h1>
 
     <div v-if="loading">Loading…</div>
 
-    <form v-else @submit.prevent="handleSubmit">
-      <div style="margin-bottom: 12px;">
-        <label for="name">Name *</label><br />
-        <input id="name" v-model="name" type="text" style="width: 100%; max-width: 400px;" />
-        <div v-if="errors.name" style="color: red; font-size: 0.9em; margin-top: 4px;">
-          {{ errors.name }}
-        </div>
+    <form v-else @submit.prevent="handleSubmit" class="form">
+      <div class="field">
+        <label for="name">Name *</label>
+        <input id="name" v-model="name" type="text" class="input" />
+        <div v-if="errors.name" class="error">{{ errors.name }}</div>
       </div>
 
-      <div style="margin-bottom: 12px;">
-        <label for="context_tag">Context Tag</label><br />
-        <input id="context_tag" v-model="context_tag" type="text" style="width: 100%; max-width: 400px;" />
+      <div class="field">
+        <label for="context_tag">Context Tag</label>
+        <input id="context_tag" v-model="context_tag" type="text" class="input" />
       </div>
 
-      <div style="margin-bottom: 12px;">
-        <label for="organisation">Organisation</label><br />
-        <input id="organisation" v-model="organisation" type="text" style="width: 100%; max-width: 400px;" />
+      <div class="field">
+        <label for="organisation">Organisation</label>
+        <input id="organisation" v-model="organisation" type="text" class="input" />
       </div>
 
-      <div style="margin-bottom: 12px;">
+      <div class="field">
         <strong>Phone Numbers</strong>
-        <div v-for="(phone, index) in phones" :key="phone.id" style="display: flex; gap: 8px; margin-top: 4px;">
+        <div v-for="(phone, index) in phones" :key="phone.id" class="dynamic-row">
           <input
             v-model="phones[index].number"
             type="tel"
             placeholder="Phone number"
-            style="flex: 1; max-width: 360px;"
+            class="input input-flex"
           />
-          <button type="button" @click="removePhone(index)">Remove</button>
+          <button type="button" class="btn-remove" @click="removePhone(index)">Remove</button>
         </div>
-        <button type="button" style="margin-top: 8px;" @click="addPhone">+ Add Phone</button>
+        <button type="button" class="btn-add" @click="addPhone">+ Add Phone</button>
       </div>
 
-      <div style="margin-bottom: 12px;">
+      <div class="field">
         <strong>Email Addresses</strong>
-        <div v-for="(email, index) in emails" :key="email.id" style="display: flex; gap: 8px; margin-top: 4px;">
+        <div v-for="(email, index) in emails" :key="email.id" class="dynamic-row">
           <input
             v-model="emails[index].address"
             type="email"
             placeholder="Email address"
-            style="flex: 1; max-width: 360px;"
+            class="input input-flex"
           />
-          <button type="button" @click="removeEmail(index)">Remove</button>
+          <button type="button" class="btn-remove" @click="removeEmail(index)">Remove</button>
         </div>
-        <button type="button" style="margin-top: 8px;" @click="addEmail">+ Add Email</button>
+        <button type="button" class="btn-add" @click="addEmail">+ Add Email</button>
       </div>
 
-      <div v-if="errorMessage" style="color: red; margin-bottom: 12px;">
+      <div v-if="errorMessage" class="error error-block">
         {{ errorMessage }}
       </div>
 
-      <div style="display: flex; gap: 8px;">
-        <button type="submit" :disabled="submitting">
+      <div class="form-actions">
+        <button type="submit" :disabled="submitting" class="btn-primary">
           {{ submitting ? 'Saving…' : 'Save Changes' }}
         </button>
-        <button type="button" @click="router.push(`/contacts/${id}`)">Cancel</button>
+        <button type="button" class="btn-cancel" @click="router.push(`/contacts/${id}`)">Cancel</button>
       </div>
     </form>
   </div>
@@ -158,3 +156,114 @@ async function handleSubmit() {
   }
 }
 </script>
+
+<style scoped>
+.page {
+  padding: var(--space-4);
+}
+
+.form {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.field {
+  margin-bottom: var(--space-4);
+}
+
+.field label,
+.field strong {
+  display: block;
+  margin-bottom: var(--space-1);
+  font-size: var(--font-size-sm);
+  color: var(--color-text);
+}
+
+.input {
+  width: 100%;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-base);
+  box-sizing: border-box;
+}
+
+.input-flex {
+  flex: 1;
+  width: auto;
+}
+
+.dynamic-row {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+  align-items: center;
+}
+
+.btn-add {
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-1) var(--space-3);
+  cursor: pointer;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  margin-top: var(--space-2);
+}
+
+.btn-remove {
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-1) var(--space-2);
+  cursor: pointer;
+  color: var(--color-danger);
+  font-size: var(--font-size-sm);
+  flex-shrink: 0;
+}
+
+.error {
+  color: var(--color-danger);
+  font-size: var(--font-size-sm);
+  margin-top: var(--space-1);
+}
+
+.error-block {
+  margin-bottom: var(--space-3);
+}
+
+.form-actions {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-6);
+  font-size: var(--font-size-base);
+  cursor: pointer;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--color-primary-dark);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-cancel {
+  background: none;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-4);
+  font-size: var(--font-size-base);
+  cursor: pointer;
+  color: var(--color-text-muted);
+}
+</style>

@@ -1,16 +1,16 @@
 <template>
   <div>
-    <div v-if="interactionStore.entries.length === 0" style="color: #888; font-style: italic;">
+    <div v-if="interactionStore.entries.length === 0" class="empty-state">
       No interactions yet
     </div>
 
     <div
       v-for="entry in interactionStore.entries"
       :key="entry.id"
-      style="border: 1px solid #ddd; border-radius: 6px; padding: 12px; margin-bottom: 10px;"
+      class="entry"
     >
-      <div style="white-space: pre-wrap; margin-bottom: 6px;">{{ entry.content }}</div>
-      <div style="font-size: 0.8em; color: #888; display: flex; gap: 12px; align-items: center;">
+      <div class="entry-content">{{ entry.content }}</div>
+      <div class="entry-meta">
         <span>{{ formatDate(entry.created_at) }}</span>
         <span v-if="entry.lat != null && entry.lng != null">📍</span>
       </div>
@@ -36,3 +36,32 @@ function formatDate(isoString: string): string {
   return new Date(isoString).toLocaleString()
 }
 </script>
+
+<style scoped>
+.empty-state {
+  color: var(--color-text-muted);
+  font-style: italic;
+}
+
+.entry {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-2);
+  background: var(--color-bg);
+}
+
+.entry-content {
+  white-space: pre-wrap;
+  margin-bottom: var(--space-2);
+  color: var(--color-text);
+}
+
+.entry-meta {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+}
+</style>

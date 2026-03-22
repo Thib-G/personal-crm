@@ -1,19 +1,16 @@
 <template>
-  <div>
+  <div class="page">
     <h1>Map</h1>
 
-    <div v-if="noData" style="color: #888; font-style: italic; margin-top: 16px;">
+    <div v-if="noData" class="no-data">
       No location data yet. Add contacts or interactions with GPS enabled.
     </div>
 
-    <div v-if="errorMessage" style="color: red; margin-top: 16px;">
+    <div v-if="errorMessage" class="error-message">
       {{ errorMessage }}
     </div>
 
-    <div
-      ref="mapContainer"
-      style="height: 400px; width: 100%; margin-top: 16px;"
-    ></div>
+    <div ref="mapContainer" class="map-container"></div>
   </div>
 </template>
 
@@ -117,3 +114,32 @@ onUnmounted(() => {
   }
 })
 </script>
+
+<style scoped>
+.page {
+  padding: var(--space-4);
+}
+
+.page h1 {
+  margin-top: 0;
+  margin-bottom: var(--space-3);
+}
+
+.no-data {
+  color: var(--color-text-muted);
+  font-style: italic;
+  margin-bottom: var(--space-4);
+}
+
+.error-message {
+  color: var(--color-danger);
+  margin-bottom: var(--space-4);
+}
+
+.map-container {
+  height: calc(100vh - 120px);
+  min-height: 300px;
+  width: 100%;
+  border-radius: var(--radius-md);
+}
+</style>

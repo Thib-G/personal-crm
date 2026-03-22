@@ -1,22 +1,25 @@
 <template>
-  <div>
+  <div class="page">
     <h1>Settings</h1>
 
-    <div style="margin-top: 24px;">
-      <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
-        <input
-          type="checkbox"
-          :checked="settingsStore.locationTrackingEnabled"
-          @change="handleLocationToggle"
-          style="width: 18px; height: 18px; cursor: pointer;"
-        />
-        <span>Record location with contacts and interactions</span>
-      </label>
+    <div class="settings-section">
+      <div class="toggle-row">
+        <label class="toggle-label" for="location-toggle">
+          <input
+            id="location-toggle"
+            type="checkbox"
+            :checked="settingsStore.locationTrackingEnabled"
+            @change="handleLocationToggle"
+            class="toggle-checkbox"
+          />
+          <div class="toggle-text">
+            <span class="toggle-title">Record location with contacts and interactions</span>
+            <span class="toggle-description">When enabled, your GPS coordinates are saved when you add contacts or log interactions.</span>
+          </div>
+        </label>
+      </div>
 
-      <div
-        v-if="showSaved"
-        style="margin-top: 8px; font-size: 0.9em; color: green;"
-      >
+      <div v-if="showSaved" class="saved-feedback">
         Saved
       </div>
     </div>
@@ -47,3 +50,58 @@ async function handleLocationToggle(event: Event) {
   }, 2000)
 }
 </script>
+
+<style scoped>
+.page {
+  padding: var(--space-4);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.settings-section {
+  margin-top: var(--space-6);
+}
+
+.toggle-row {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+}
+
+.toggle-label {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  cursor: pointer;
+}
+
+.toggle-checkbox {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.toggle-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.toggle-title {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.toggle-description {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.saved-feedback {
+  margin-top: var(--space-2);
+  font-size: var(--font-size-sm);
+  color: var(--color-success);
+}
+</style>

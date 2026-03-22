@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="page">
     <div v-if="loading">Loading…</div>
 
     <div v-else-if="!contact">
@@ -8,73 +8,71 @@
     </div>
 
     <div v-else>
-      <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+      <div class="page-header">
         <div>
           <h1>{{ contact.name }}</h1>
-          <span style="font-size: 0.85em; background: #eee; padding: 2px 8px; border-radius: 4px;">
-            {{ contact.context_tag }}
-          </span>
+          <span class="context-tag">{{ contact.context_tag }}</span>
         </div>
-        <div style="display: flex; gap: 8px;">
-          <button type="button" @click="router.push(`/contacts/${contact.id}/edit`)">Edit</button>
-          <button type="button" @click="confirmDelete">Delete</button>
+        <div class="header-actions">
+          <button type="button" class="btn-primary" @click="router.push(`/contacts/${contact.id}/edit`)">Edit</button>
+          <button type="button" class="btn-danger" @click="confirmDelete">Delete</button>
         </div>
       </div>
 
-      <div v-if="contact.organisation" style="margin-top: 8px; color: #555;">
+      <div v-if="contact.organisation" class="organisation">
         {{ contact.organisation }}
       </div>
 
-      <div style="margin-top: 16px;">
+      <div class="added-row">
         <strong>Added</strong>
-        <span style="margin-left: 8px;">{{ formatDate(contact.created_at) }}</span>
+        <span class="added-date">{{ formatDate(contact.created_at) }}</span>
         <span
           v-if="contact.created_lat != null && contact.created_lng != null"
-          style="margin-left: 8px; font-size: 0.85em; color: #888;"
+          class="added-coords"
         >
           ({{ contact.created_lat.toFixed(4) }}, {{ contact.created_lng.toFixed(4) }})
         </span>
       </div>
 
-      <div v-if="phones.length > 0" style="margin-top: 16px;">
-        <strong>Phone Numbers</strong>
-        <ul style="margin: 4px 0 0 0; padding-left: 20px;">
+      <div v-if="phones.length > 0" class="section-card">
+        <h2 class="section-heading">Phone Numbers</h2>
+        <ul class="section-list">
           <li v-for="phone in phones" :key="phone.id">
             <a :href="`tel:${phone.number}`">{{ phone.number }}</a>
           </li>
         </ul>
       </div>
 
-      <div v-if="emails.length > 0" style="margin-top: 16px;">
-        <strong>Email Addresses</strong>
-        <ul style="margin: 4px 0 0 0; padding-left: 20px;">
+      <div v-if="emails.length > 0" class="section-card">
+        <h2 class="section-heading">Email Addresses</h2>
+        <ul class="section-list">
           <li v-for="email in emails" :key="email.id">
             <a :href="`mailto:${email.address}`">{{ email.address }}</a>
           </li>
         </ul>
       </div>
 
-      <div style="margin-top: 32px;">
-        <h2>Interactions</h2>
-        <AddInteractionForm :contact-id="id" style="margin-bottom: 16px;" />
+      <div class="section-card">
+        <h2 class="section-heading">Interactions</h2>
+        <AddInteractionForm :contact-id="id" class="interaction-form" />
         <InteractionFeed :contact-id="id" />
       </div>
 
-      <div style="margin-top: 32px;">
-        <h2>Edit History</h2>
+      <div class="section-card">
+        <h2 class="section-heading">Edit History</h2>
         <HistoryPanel :history="history" />
       </div>
 
-      <div v-if="showDeleteConfirm" role="dialog" aria-modal="true" aria-labelledby="delete-dialog-title" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 100;">
-        <div style="background: #fff; padding: 24px; border-radius: 8px; max-width: 400px; width: 90%;">
-          <h2 id="delete-dialog-title" style="margin-top: 0;">Delete Contact?</h2>
+      <div v-if="showDeleteConfirm" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="delete-dialog-title">
+        <div class="modal-box">
+          <h2 id="delete-dialog-title" class="modal-title">Delete Contact?</h2>
           <p>
             This will permanently delete all contact data including history and interactions.
             This cannot be undone.
           </p>
-          <div style="display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px;">
+          <div class="modal-actions">
             <button type="button" @click="showDeleteConfirm = false">Cancel</button>
-            <button type="button" :disabled="isDeleting" @click="handleDelete" style="color: red;">
+            <button type="button" class="btn-danger" :disabled="isDeleting" @click="handleDelete">
               {{ isDeleting ? 'Deleting…' : 'Delete' }}
             </button>
           </div>
@@ -152,3 +150,138 @@ async function handleDelete() {
   }
 }
 </script>
+
+<style scoped>
+.page {
+  padding: var(--space-4);
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.page-header h1 {
+  margin: 0 0 var(--space-1) 0;
+}
+
+.context-tag {
+  font-size: var(--font-size-sm);
+  background: var(--color-tag-bg);
+  color: var(--color-tag-text);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-sm);
+}
+
+.header-actions {
+  display: flex;
+  gap: var(--space-2);
+  flex-shrink: 0;
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-4);
+  cursor: pointer;
+  font-size: var(--font-size-base);
+}
+
+.btn-primary:hover {
+  background: var(--color-primary-dark);
+}
+
+.btn-danger {
+  background: var(--color-danger);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: var(--space-2) var(--space-4);
+  cursor: pointer;
+  font-size: var(--font-size-base);
+}
+
+.organisation {
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-2);
+}
+
+.added-row {
+  margin-bottom: var(--space-4);
+  color: var(--color-text);
+}
+
+.added-date {
+  margin-left: var(--space-2);
+}
+
+.added-coords {
+  margin-left: var(--space-2);
+  font-size: var(--font-size-sm);
+  color: var(--color-text-muted);
+}
+
+.section-card {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: var(--space-4);
+  margin-bottom: var(--space-4);
+}
+
+.section-heading {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  margin: 0 0 var(--space-3) 0;
+}
+
+.section-list {
+  margin: 0;
+  padding-left: var(--space-4);
+}
+
+.interaction-form {
+  margin-bottom: var(--space-4);
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.modal-box {
+  background: var(--color-bg);
+  padding: var(--space-6);
+  border-radius: var(--radius-md);
+  max-width: 400px;
+  width: 90%;
+}
+
+.modal-title {
+  margin-top: 0;
+}
+
+.modal-actions {
+  display: flex;
+  gap: var(--space-2);
+  justify-content: flex-end;
+  margin-top: var(--space-4);
+}
+
+@media (min-width: 960px) {
+  .page {
+    max-width: 960px;
+    margin: 0 auto;
+  }
+}
+</style>
