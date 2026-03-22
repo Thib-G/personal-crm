@@ -103,20 +103,62 @@ def sync_push(request, payload: SyncPushIn):
                 elif operation == "update":
                     try:
                         contact = Contact.all_objects.filter(owner=request.user).get(pk=record_id)
-                        old_name = contact.name
-                        if "name" in p and p["name"].strip():
-                            contact.name = p["name"].strip()
-                        if "context_tag" in p:
-                            contact.context_tag = p["context_tag"]
-                        if "organisation" in p:
-                            contact.organisation = p["organisation"]
-                        contact.save()
-                        if old_name != contact.name:
+                        edit_lat = p.get("edit_lat") if location_enabled else None
+                        edit_lng = p.get("edit_lng") if location_enabled else None
+
+                        if "name" in p and p["name"].strip() and p["name"].strip() != contact.name:
                             ContactHistory.objects.create(
                                 contact=contact, field_name="name",
-                                old_value=old_name, new_value=contact.name,
-                                lat=p.get("edit_lat") if location_enabled else None,
-                                lng=p.get("edit_lng") if location_enabled else None,
+                                old_value=contact.name, new_value=p["name"].strip(),
+                                lat=edit_lat, lng=edit_lng,
+                            )
+                            contact.name = p["name"].strip()
+                        if "context_tag" in p and p["context_tag"] != contact.context_tag:
+                            ContactHistory.objects.create(
+                                contact=contact, field_name="context_tag",
+                                old_value=contact.context_tag, new_value=p["context_tag"],
+                                lat=edit_lat, lng=edit_lng,
+                            )
+                            contact.context_tag = p["context_tag"]
+                        if "organisation" in p and p["organisation"] != contact.organisation:
+                            ContactHistory.objects.create(
+                                contact=contact, field_name="organisation",
+                                old_value=contact.organisation or "", new_value=p["organisation"] or "",
+                                lat=edit_lat, lng=edit_lng,
+                            )
+                            contact.organisation = p["organisation"]
+                        contact.save()
+
+                        if "phones" in p and p["phones"] is not None:
+                            old_phones = list(contact.phones.values_list("number", flat=True))
+                            contact.phones.all().delete()
+                            for phone in p["phones"]:
+                                if phone.get("number", "").strip():
+                                    ContactPhone.objects.create(
+                                        id=uuid.UUID(phone["id"]), contact=contact,
+                                        number=phone["number"].strip(),
+                                    )
+                            new_phones = [ph["number"] for ph in p["phones"] if ph.get("number", "").strip()]
+                            ContactHistory.objects.create(
+                                contact=contact, field_name="phones",
+                                old_value=str(old_phones), new_value=str(new_phones),
+                                lat=edit_lat, lng=edit_lng,
+                            )
+
+                        if "emails" in p and p["emails"] is not None:
+                            old_emails = list(contact.emails.values_list("address", flat=True))
+                            contact.emails.all().delete()
+                            for email in p["emails"]:
+                                if email.get("address", "").strip():
+                                    ContactEmail.objects.create(
+                                        id=uuid.UUID(email["id"]), contact=contact,
+                                        address=email["address"].strip(),
+                                    )
+                            new_emails = [em["address"] for em in p["emails"] if em.get("address", "").strip()]
+                            ContactHistory.objects.create(
+                                contact=contact, field_name="emails",
+                                old_value=str(old_emails), new_value=str(new_emails),
+                                lat=edit_lat, lng=edit_lng,
                             )
                     except Contact.DoesNotExist:
                         errors.append(SyncErrorItem(entity=entity, id=record_id, error="Contact not found"))
