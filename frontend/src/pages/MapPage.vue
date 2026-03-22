@@ -137,7 +137,7 @@ onUnmounted(() => {
 }
 
 .map-container {
-  height: calc(100vh - 120px);
+  height: calc(100vh - 160px);
   min-height: 300px;
   width: 100%;
   border-radius: var(--radius-md);
