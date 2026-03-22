@@ -114,7 +114,15 @@ docker compose up -d
 
 This builds the production image (frontend + backend) and starts the container. The first build takes a few minutes. On subsequent deploys, only changed layers are rebuilt.
 
-### 4. Verify the application is running
+### 4. Create your user account
+
+```bash
+docker compose exec app python manage.py createsuperuser
+```
+
+Follow the prompts to set a username and password. This only needs to be done once — the account persists in the data volume.
+
+### 5. Verify the application is running
 
 ```bash
 curl http://localhost:8000
@@ -122,7 +130,7 @@ curl http://localhost:8000
 
 You should receive an HTTP response. The application is now running and waiting for the reverse proxy.
 
-### 5. Data persistence
+### 6. Data persistence
 
 Application data is stored in `./data/db.sqlite3` on the **host machine** — it is mounted into the container at `/app/data/db.sqlite3`. This means:
 
