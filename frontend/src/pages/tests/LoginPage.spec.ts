@@ -72,15 +72,6 @@ describe('App.vue handleLogout', () => {
       new Response(JSON.stringify({ detail: 'Logged out' }), { status: 200 }),
     )
 
-    // Capture window.location.href assignment
-    const locationSpy = vi.spyOn(window, 'location', 'get').mockReturnValue({
-      ...window.location,
-      set href(url: string) {
-        locationSpy.mock.results.push({ type: 'return', value: url } as never)
-      },
-    })
-
-    // Simpler approach: replace the assign/href setter via Object.defineProperty
     let capturedHref: string | null = null
     Object.defineProperty(window, 'location', {
       value: {
