@@ -1,6 +1,6 @@
 # personal-crm Development Guidelines
 
-Auto-generated from all feature plans. Last updated: 2026-03-22
+Auto-generated from all feature plans. Last updated: 2026-03-25
 
 ## Active Technologies
 - TypeScript 5 / Vue 3 (frontend only) + Vue 3 reactive system (ref, computed), Pinia (already present — not used for this feature per research Decision 1), @vue/test-utils + Vitest (tests) (002-sync-status-indicator)
@@ -15,6 +15,8 @@ Auto-generated from all feature plans. Last updated: 2026-03-22
 - IndexedDB via Dexie.js (no schema changes) (006-fix-sync-ui-refresh)
 - Python 3.13 (backend), TypeScript 5 / Vue 3 (frontend) + Django 5.2 LTS + Django-Ninja ≥1.3 (backend); Vue Router 4, Pinia (frontend) (007-fix-logout-guard)
 - N/A — no schema changes (007-fix-logout-guard)
+- TypeScript 5 / Node 22 (frontend build) + Leaflet 1.9.4 (existing), Vite (existing), Vue 3 (existing) (008-mapbox-tiles)
+- N/A — no data persistence (008-mapbox-tiles)
 
 - Python 3.13 (backend) · Node 22 / TypeScript 5 (frontend build) + Django 5.2 LTS, Django-Ninja ≥1.3, gunicorn, WhiteNoise ≥6, Dexie.js, Pinia, Vue Router 4, Leaflet.js, @vue-leaflet/vue-leaflet, Leaflet.markercluster (001-personal-crm)
 
@@ -34,9 +36,9 @@ cd src [ONLY COMMANDS FOR ACTIVE TECHNOLOGIES][ONLY COMMANDS FOR ACTIVE TECHNOLO
 Python 3.13 (backend) · Node 22 / TypeScript 5 (frontend build): Follow standard conventions
 
 ## Recent Changes
+- 008-mapbox-tiles: Added TypeScript 5 / Node 22 (frontend build) + Leaflet 1.9.4 (existing), Vite (existing), Vue 3 (existing)
 - 007-fix-logout-guard: Added Python 3.13 (backend), TypeScript 5 / Vue 3 (frontend) + Django 5.2 LTS + Django-Ninja ≥1.3 (backend); Vue Router 4, Pinia (frontend)
 - 006-fix-sync-ui-refresh: Added TypeScript 5 / Vue 3 + `dexie` (already installed — `liveQuery` is a named export, no new package needed), Pinia, Vue Router 4
-- 005-add-readme-docs: Added Markdown (documentation-only deliverable) + N/A — no new packages; existing Docker Compose files and Dockerfile are the source of truth
 
 
 <!-- MANUAL ADDITIONS START -->

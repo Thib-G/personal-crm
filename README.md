@@ -5,6 +5,7 @@ A self-hosted personal contact relationship manager — runs entirely in Docker,
 ## Table of Contents
 
 - [Prerequisites](#prerequisites)
+- [Mapbox Setup](#mapbox-setup)
 - [Local Development](#local-development)
 - [Production Deployment](#production-deployment)
 - [Web Server Reverse Proxy](#web-server-reverse-proxy)
@@ -24,6 +25,50 @@ A self-hosted personal contact relationship manager — runs entirely in Docker,
 > Verify with `docker compose version` before proceeding.
 
 > **Port requirements**: The local development stack uses ports **8000** (backend) and **5173** (frontend). Make sure both are free before starting. If either port is in use, stop the conflicting process or edit `docker-compose.dev.yml` to use different host ports.
+
+---
+
+## Mapbox Setup
+
+The map uses [Mapbox](https://www.mapbox.com/) raster tiles. You need a free Mapbox access token to display the map.
+
+### 1. Get a Mapbox token
+
+1. Create a free account at <https://account.mapbox.com/auth/signup/>
+2. On your account dashboard, copy the **Default public token** (starts with `pk.`)
+
+### 2. Set the token for local development
+
+Copy the example env file and fill in your token:
+
+```bash
+cp frontend/.env.example frontend/.env
+# then open frontend/.env and replace the placeholder with your real token
+```
+
+Or export it directly in your shell before running `docker compose`:
+
+```bash
+export VITE_MAPBOX_TOKEN=pk.your-token-here
+```
+
+### 3. Set the token for production
+
+Add the token to the `.env` file that Docker Compose reads at deploy time:
+
+```bash
+# in your production .env file (same directory as docker-compose.yml):
+VITE_MAPBOX_TOKEN=pk.your-token-here
+```
+
+The token is baked into the frontend bundle at build time. Rebuild the image after changing it:
+
+```bash
+docker compose build
+docker compose up -d
+```
+
+> **Security note**: Mapbox public tokens are designed to be browser-visible. Scope your token to specific URLs via the [Mapbox token management page](https://account.mapbox.com/access-tokens/) to prevent unauthorised usage.
 
 ---
 

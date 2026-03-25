@@ -10,7 +10,19 @@
       {{ errorMessage }}
     </div>
 
-    <div ref="mapContainer" class="map-container"></div>
+    <div class="map-wrapper">
+      <div ref="mapContainer" class="map-container"></div>
+      <div class="tile-switcher">
+        <button
+          v-for="style in TILE_STYLES"
+          :key="style.id"
+          :class="['tile-btn', { active: activeTileStyleId === style.id }]"
+          @click="setTileStyle(style.id)"
+        >
+          {{ style.label }}
+        </button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -33,13 +45,31 @@ L.Icon.Default.mergeOptions({
   shadowUrl: markerShadow,
 })
 
+const TILE_STYLES = [
+  { id: 'light' as const, label: 'Light', styleId: 'mapbox/light-v11' },
+  { id: 'dark' as const, label: 'Dark', styleId: 'mapbox/dark-v11' },
+  { id: 'satellite' as const, label: 'Satellite', styleId: 'mapbox/satellite-streets-v12' },
+]
+
+type TileStyleId = (typeof TILE_STYLES)[number]['id']
+
+const MAPBOX_ATTRIBUTION =
+  '© <a href="https://www.mapbox.com/about/maps/">Mapbox</a> ' +
+  '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+
+function buildTileUrl(styleId: string, token: string): string {
+  return `https://api.mapbox.com/styles/v1/${styleId}/tiles/{z}/{x}/{y}@2x?access_token=${token}`
+}
+
 const router = useRouter()
 
 const mapContainer = ref<HTMLDivElement | null>(null)
 const noData = ref(false)
 const errorMessage = ref('')
+const activeTileStyleId = ref<TileStyleId>('light')
 
 let mapInstance: L.Map | null = null
+let currentTileLayer: L.TileLayer | null = null
 
 interface MapPin {
   type: string
@@ -52,7 +82,27 @@ interface MapPin {
   timestamp: string
 }
 
+function setTileStyle(id: TileStyleId) {
+  const style = TILE_STYLES.find((s) => s.id === id)
+  if (!style || !mapInstance) return
+  const token = import.meta.env.VITE_MAPBOX_TOKEN
+  if (currentTileLayer) mapInstance.removeLayer(currentTileLayer)
+  currentTileLayer = L.tileLayer(buildTileUrl(style.styleId, token), {
+    tileSize: 512,
+    zoomOffset: -1,
+    maxZoom: 22,
+    attribution: MAPBOX_ATTRIBUTION,
+  }).addTo(mapInstance)
+  activeTileStyleId.value = id
+}
+
 onMounted(async () => {
+  const token = import.meta.env.VITE_MAPBOX_TOKEN
+  if (!token) {
+    errorMessage.value = 'Map tiles unavailable: VITE_MAPBOX_TOKEN is not configured.'
+    return
+  }
+
   let pins: MapPin[] = []
 
   try {
@@ -62,7 +112,7 @@ onMounted(async () => {
       return
     }
     pins = await resp.json()
-  } catch (err) {
+  } catch {
     errorMessage.value = 'Failed to load map data. Please try again.'
     return
   }
@@ -75,9 +125,11 @@ onMounted(async () => {
 
   mapInstance = L.map(mapContainer.value).setView([20, 0], 2)
 
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    maxZoom: 19,
+  currentTileLayer = L.tileLayer(buildTileUrl('mapbox/light-v11', token), {
+    tileSize: 512,
+    zoomOffset: -1,
+    maxZoom: 22,
+    attribution: MAPBOX_ATTRIBUTION,
   }).addTo(mapInstance)
 
   if (pins.length > 0) {
@@ -85,16 +137,20 @@ onMounted(async () => {
 
     for (const pin of pins) {
       const popup = L.popup().setContent(
-        `<strong>${pin.contact_name}</strong><br />${pin.label}<br /><a href="#" class="popup-contact-link" style="font-size:0.85em;">View contact</a>`
+        `<strong>${pin.contact_name}</strong><br />${pin.label}<br /><a href="#" class="popup-contact-link" style="font-size:0.85em;">View contact</a>`,
       )
       const marker = L.marker([pin.lat, pin.lng]).bindPopup(popup)
       marker.on('popupopen', () => {
         const link = popup.getElement()?.querySelector('.popup-contact-link')
         if (link) {
-          link.addEventListener('click', (e) => {
-            e.preventDefault()
-            router.push('/contacts/' + pin.contact_id)
-          }, { once: true })
+          link.addEventListener(
+            'click',
+            (e) => {
+              e.preventDefault()
+              router.push('/contacts/' + pin.contact_id)
+            },
+            { once: true },
+          )
         }
       })
       clusterGroup.addLayer(marker)
@@ -136,10 +192,43 @@ onUnmounted(() => {
   margin-bottom: var(--space-4);
 }
 
+.map-wrapper {
+  position: relative;
+}
+
 .map-container {
   height: calc(100vh - 160px);
   min-height: 300px;
   width: 100%;
   border-radius: var(--radius-md);
+}
+
+.tile-switcher {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
+  display: flex;
+  gap: 2px;
+}
+
+.tile-btn {
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  background: white;
+  border: 1px solid #ccc;
+  border-radius: var(--radius-sm, 4px);
+  cursor: pointer;
+  line-height: 1.4;
+}
+
+.tile-btn:hover {
+  background: #f5f5f5;
+}
+
+.tile-btn.active {
+  background: #333;
+  color: white;
+  border-color: #333;
 }
 </style>
